@@ -1,0 +1,32 @@
+{
+    "jadwal": [
+        {
+            "nim": "130030449",
+            "nama": "ENDANG TRIANI",
+            "ruangan": "ONLINE",
+            "jam": "1700 - 1730",
+            "hari": "2",
+            "tanggal": "11",
+            "bulan": "1",
+            "tahun": "2021"
+        }
+    ],
+    "message": "ok"
+}
+
+krs sp
+
+{
+    "krs": [
+        {
+            "kode_matakuliah": "SK9491",
+            "nama_matakuliah": "Kerja Praktek",
+            "sks": "2",
+            "kode_kelas": "-",
+            "semester1": "VII",
+            "semester2": "Pendek",
+            "tahun_ajaran": "2019/2020"
+        }
+    ],
+    "message": "ok"
+}

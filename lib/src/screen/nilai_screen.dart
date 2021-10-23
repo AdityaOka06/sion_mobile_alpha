@@ -1,0 +1,502 @@
+import 'package:numerus/numerus.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+import 'login_screen.dart';
+import '../bloc/bloc.dart';
+import '../util/size_config.dart';
+import '../model/nilai_model.dart';
+import '../widget/drawer_widget.dart';
+import '../widget/settings_widget.dart';
+
+NilaiBloc _nilaiBloc = NilaiBloc();
+
+class NilaiScreen extends StatefulWidget {
+  NilaiScreen({Key key}) : super(key: key);
+
+  @override
+  _NilaiScreenState createState() => _NilaiScreenState();
+}
+
+class _NilaiScreenState extends State<NilaiScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            title: Text("Nilai"),
+            actions: [SettingsWidget()],
+            bottom: TabBar(
+              tabs: [
+                Tab(
+                  text: "IPK",
+                ),
+                Tab(text: "Transkrip"),
+                Tab(text: "Histori")
+              ],
+            ),
+          ),
+          drawer: DrawerWidget(),
+          body: TabBarView(
+            children: [IpkScreen(), TranskripScreen(), HistoriScreen()],
+          ),
+        ));
+  }
+}
+
+//Histori Screen--------------------------------------------------------------//
+
+class HistoriScreen extends StatefulWidget {
+  HistoriScreen({Key key}) : super(key: key);
+
+  @override
+  _HistoriScreenState createState() => _HistoriScreenState();
+}
+
+class _HistoriScreenState extends State<HistoriScreen> {
+  List<DropdownMenuItem> menuItem = List<DropdownMenuItem>();
+  String hasilMenu;
+
+  @override
+  void initState() {
+    super.initState();
+    for (int i = 1; i <= 15; i++) {
+      if (i == 15) {
+        menuItem.add(DropdownMenuItem(child: Text("Pendek"), value: "pendek"));
+      } else {
+        menuItem.add(DropdownMenuItem(child: Text("$i"), value: "$i"));
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: [
+        Container(
+          margin: EdgeInsets.only(
+              top: SizeConfig.blokVertical * 2,
+              right: SizeConfig.blokHorizontal * 5),
+          alignment: Alignment.topRight,
+          child: DropdownButton(
+            hint: (hasilMenu != null) ? Text("$hasilMenu") : Text("Semester"),
+            items: menuItem,
+            onChanged: (hasil) {
+              setState(() {
+                hasilMenu = hasil;
+                if (hasil != "pendek") {
+                  var angka = int.parse(hasil).toRomanNumeralString();
+                  _nilaiBloc.historiSink(angka);
+                } else {
+                  _nilaiBloc.historiSink(hasil);
+                }
+                _nilaiBloc.fetchHistori();
+              });
+            },
+          ),
+        ),
+        Container(
+          child: StreamBuilder(
+            stream: _nilaiBloc.historiStream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                if (snapshot.data.status == Status.ERROR) {
+                  print("snapshot error = ${snapshot.data.message}");
+                  if (snapshot.data.message.contains("Unauthorised")) {
+                    return Container(
+                      margin:
+                          EdgeInsets.only(top: SizeConfig.blokVertical * 35),
+                      alignment: Alignment.center,
+                      child: Column(
+                        children: [
+                          Text(
+                            "Sesi anda sudah habis \n"
+                            "Silahkan melakukan proses Login kembali",
+                            textAlign: TextAlign.center,
+                          ),
+                          FlatButton(
+                              onPressed: () {
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginScreen()));
+                              },
+                              child: Text("Login"))
+                        ],
+                      ),
+                    );
+                  } else {
+                    return Container(
+                      alignment: Alignment.center,
+                      margin:
+                          EdgeInsets.only(top: SizeConfig.blokVertical * 35),
+                      child: Text(
+                        "Terjadi kesalahan saat melakukan pengambilan data \n"
+                        "Silahkan coba lagi",
+                        textAlign: TextAlign.center,
+                      ),
+                    );
+                  }
+                } else if (snapshot.data.status == Status.COMPLATED) {
+                  if (snapshot.data.data.histori.length == 0) {
+                    return Container(
+                      margin:
+                          EdgeInsets.only(top: SizeConfig.blokVertical * 30),
+                      child: Text(
+                        "Data tidak ditemukan pada semester ini",
+                        textAlign: TextAlign.center,
+                      ),
+                    );
+                  } else {
+                    return Container(
+                      margin: EdgeInsets.only(
+                          bottom: SizeConfig.blokVertical * 2,
+                          left: SizeConfig.blokHorizontal * 2,
+                          right: SizeConfig.blokHorizontal * 2),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: snapshot.data.data.histori.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                              margin: EdgeInsets.only(
+                                top: SizeConfig.blokVertical * 2,
+                              ),
+                              child: ExpansionTile(
+                                title: Text(
+                                    "${snapshot.data.data.histori[index].namaMatakuliah}"),
+                                subtitle: Text(
+                                  "${snapshot.data.data.histori[index].kodeMatakuliah}",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    height: 1.5,
+                                  ),
+                                ),
+                                children: [
+                                  ListTile(
+                                    dense: true,
+                                    title: Text(
+                                      "Tugas",
+                                    ),
+                                    subtitle: Text(
+                                      "${snapshot.data.data.histori[index].tugas}",
+                                      style: TextStyle(fontSize: 14),
+                                    ),
+                                  ),
+                                  ListTile(
+                                    dense: true,
+                                    title: Text(
+                                      "Kuis",
+                                    ),
+                                    subtitle: Text(
+                                      "${snapshot.data.data.histori[index].kuis}",
+                                      style: TextStyle(fontSize: 14),
+                                    ),
+                                  ),
+                                  ListTile(
+                                    dense: true,
+                                    title: Text(
+                                      "UTS",
+                                    ),
+                                    subtitle: Text(
+                                      "${snapshot.data.data.histori[index].uts}",
+                                      style: TextStyle(fontSize: 14),
+                                    ),
+                                  ),
+                                  ListTile(
+                                    dense: true,
+                                    title: Text(
+                                      "UAS",
+                                    ),
+                                    subtitle: Text(
+                                      "${snapshot.data.data.histori[index].uas}",
+                                      style: TextStyle(fontSize: 14),
+                                    ),
+                                  ),
+                                  ListTile(
+                                    dense: true,
+                                    title: Text(
+                                      "Nilai",
+                                    ),
+                                    subtitle: Text(
+                                      "${snapshot.data.data.histori[index].na}  /  ${snapshot.data.data.histori[index].nh}",
+                                      style: TextStyle(fontSize: 14),
+                                    ),
+                                  ),
+                                ],
+                              ));
+                        },
+                      ),
+                    );
+                  }
+                } else {
+                  return Container(
+                    margin: EdgeInsets.only(top: SizeConfig.blokVertical * 30),
+                    alignment: Alignment.center,
+                    child: SpinKitFadingCircle(
+                      color: Theme.of(context).buttonColor,
+                    ),
+                  );
+                }
+              } else {
+                return Container();
+              }
+            },
+          ),
+        )
+      ],
+    );
+  }
+}
+
+//Histori Screen--------------------------------------------------------------//
+
+//IPK Screen------------------------------------------------------------------//
+
+class IpkScreen extends StatefulWidget {
+  IpkScreen({Key key}) : super(key: key);
+
+  @override
+  _IpkScreenState createState() => _IpkScreenState();
+}
+
+class _IpkScreenState extends State<IpkScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _nilaiBloc.fetchIp();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: StreamBuilder(
+        stream: _nilaiBloc.ipStream,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            if (snapshot.data.status == Status.ERROR) {
+              if (snapshot.data.message.contains("Unauthorised")) {
+                return Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Sesi anda telah habis \n Silahkan melakukan proses Login kembali",
+                        textAlign: TextAlign.center,
+                      ),
+                      FlatButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginScreen()));
+                          },
+                          child: Text("Login"))
+                    ],
+                  ),
+                );
+              } else {
+                return Container(
+                  margin: EdgeInsets.only(
+                    top: SizeConfig.blokVertical * 2,
+                  ),
+                  child: Center(
+                    child: Text(
+                      "Terjadi kesalahan saat melakukan pengambilan data \n Silahkan coba lagi nanti",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              }
+            } else if (snapshot.data.status == Status.COMPLATED) {
+              List<Ip> ip = snapshot.data.data.ip;
+              int length = snapshot.data.data.ip.length - 1;
+              if (snapshot.data.data.ip.length == 0) {
+                return Container(
+                  child: Center(
+                    child: Text(
+                      "Data IPK belum tersedia",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              } else {
+                return Container(
+                  margin: EdgeInsets.only(
+                    top: SizeConfig.blokVertical * 2,
+                  ),
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(
+                            left: SizeConfig.blokHorizontal * 3,
+                            right: SizeConfig.blokHorizontal * 3),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                                color: Theme.of(context).buttonColor)),
+                        alignment: Alignment.center,
+                        child: DataTable(
+                          columns: [
+                            DataColumn(label: Text("Semester")),
+                            DataColumn(label: Text("IPK")),
+                            DataColumn(label: Text("IPS")),
+                            DataColumn(label: Text("SKS"))
+                          ],
+                          rows: ip
+                              .map((ip) => DataRow(cells: [
+                                    DataCell(Text("${ip.semester}")),
+                                    DataCell(Text("${ip.ipKumulatif}")),
+                                    DataCell(Text("${ip.ipSemester}")),
+                                    DataCell(Text("${ip.sksSemester}"))
+                                  ]))
+                              .toList(),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(
+                            top: SizeConfig.blokVertical * 2,
+                            right: SizeConfig.blokHorizontal * 5,
+                            bottom: SizeConfig.blokVertical * 3),
+                        child: Column(
+                          children: [
+                            ListTile(
+                              dense: true,
+                              leading: Text("Total IPK"),
+                              title: Text(
+                                  "${snapshot.data.data.ip[length].ipKumulatif}"),
+                            ),
+                            ListTile(
+                              dense: true,
+                              leading: Text("Total SKS"),
+                              title: Text(
+                                  "${snapshot.data.data.ip[length].sksKumulatif}"),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              }
+            } else {
+              return SpinKitFadingCircle(
+                color: Theme.of(context).buttonColor,
+              );
+            }
+          } else {
+            return SpinKitFadingCircle(
+              color: Theme.of(context).buttonColor,
+            );
+          }
+        },
+      ),
+    );
+  }
+}
+//IPK Screen------------------------------------------------------------------//
+
+//Transkrip Screen------------------------------------------------------------//
+
+class TranskripScreen extends StatefulWidget {
+  TranskripScreen({Key key}) : super(key: key);
+
+  @override
+  _TranskripScreenState createState() => _TranskripScreenState();
+}
+
+class _TranskripScreenState extends State<TranskripScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _nilaiBloc.fetchTranskrip();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: StreamBuilder(
+        stream: _nilaiBloc.transkripStream,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            print("${snapshot.hasData}");
+            if (snapshot.data.status == Status.ERROR) {
+              if (snapshot.data.message.contains("Unauthorised")) {
+                return Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Sesi anda telah habis \n Silahkan melakukan proses Login kembali",
+                        textAlign: TextAlign.center,
+                      ),
+                      FlatButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginScreen()));
+                          },
+                          child: Text("Login"))
+                    ],
+                  ),
+                );
+              } else {
+                return Container(
+                  margin: EdgeInsets.only(
+                    top: SizeConfig.blokVertical * 2,
+                  ),
+                  child: Center(
+                    child: Text(
+                      "Terjadi kesalahan saat melakukan pengambilan data \n Silahkan coba lagi nanti",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              }
+            } else if (snapshot.data.status == Status.COMPLATED) {
+              //snapshot.data.data.transkrip[0].semester
+              //List<Transkrip> transkrip = snapshot.data.data.transkrip;
+              var transkrip = snapshot.data.data.transkrip;
+
+              return Container(
+                margin: EdgeInsets.only(
+                    top: SizeConfig.blokVertical * 3,
+                    bottom: SizeConfig.blokVertical * 3,
+                    left: SizeConfig.blokHorizontal * 2,
+                    right: SizeConfig.blokHorizontal * 2),
+                child: ListView.builder(
+                  itemCount: transkrip.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      child: ListTile(
+                        title: Text(
+                            "${transkrip[index].kodeMatakuliah} | ${transkrip[index].namaMatakuliah}"),
+                        subtitle: Text("Nilai : ${transkrip[index].nh}"),
+                      ),
+                    );
+                  },
+                ),
+              );
+            } else {
+              return SpinKitFadingCircle(
+                color: Theme.of(context).buttonColor,
+              );
+            }
+          } else {
+            print("${snapshot.hasData}");
+            return SpinKitFadingCircle(
+              color: Theme.of(context).buttonColor,
+            );
+          }
+        },
+      ),
+    );
+  }
+}
+//Transkrip Screen------------------------------------------------------------//

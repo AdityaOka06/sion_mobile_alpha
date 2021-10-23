@@ -1,0 +1,6 @@
+package com.stikom.sion_app
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity: FlutterActivity() {
+}

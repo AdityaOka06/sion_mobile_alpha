@@ -1,0 +1,1278 @@
+@startuml
+set namespaceSeparator ::
+
+class "sion_app::src::app.dart::SionApp" {
+  +_SionAppState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::app.dart::SionApp"
+
+class "sion_app::src::app.dart::_SionAppState" {
+  +Image logo1
+  +Image logo4
+  +void initState()
+  +Widget build()
+  -dynamic _removeData()
+}
+
+"sion_app::src::app.dart::_SionAppState" o-- "flutter::src::widgets::image.dart::Image"
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::app.dart::_SionAppState"
+
+class "sion_app::src::bloc::akademik_bloc.dart::AkademikBloc" {
+  -Repository _repository
+  -PublishSubject<BlocStatus<PrasyaratModel>> _prasyaratValue
+  -PublishSubject<BlocStatus<PerwalianModel>> _perwalianValue
+  -PublishSubject<BlocStatus<PollingModel>> _pollingValue
+  -PublishSubject<BlocStatus<SisaMatkulModel>> _sisaMatkulValue
+  +dynamic prasyaratStream
+  +dynamic perwalianStream
+  +dynamic pollingStream
+  +dynamic sisaMatkulStream
+  +void dispose()
+  +dynamic fetchPrasyarat()
+  +dynamic fetchPerwalian()
+  +dynamic fetchPolling()
+  +dynamic fetchSisaMatakuliah()
+}
+
+"sion_app::src::bloc::akademik_bloc.dart::AkademikBloc" o-- "sion_app::src::repository::repository.dart::Repository"
+"sion_app::src::bloc::akademik_bloc.dart::AkademikBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<PrasyaratModel>>"
+"sion_app::src::bloc::akademik_bloc.dart::AkademikBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<PerwalianModel>>"
+"sion_app::src::bloc::akademik_bloc.dart::AkademikBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<PollingModel>>"
+"sion_app::src::bloc::akademik_bloc.dart::AkademikBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<SisaMatkulModel>>"
+
+class "sion_app::src::bloc::biaya_bloc.dart::BiayaBloc" {
+  -Repository _repository
+  -PublishSubject<BlocStatus<BiayaModel>> _biayaValue
+  +dynamic biayaStream
+  +dynamic dispose()
+  +dynamic fetchBiaya()
+}
+
+"sion_app::src::bloc::biaya_bloc.dart::BiayaBloc" o-- "sion_app::src::repository::repository.dart::Repository"
+"sion_app::src::bloc::biaya_bloc.dart::BiayaBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<BiayaModel>>"
+
+class "sion_app::src::bloc::biodata_bloc.dart::BiodataBloc" {
+  -Repository _repository
+  -PublishSubject<BlocStatus<BiodataModel>> _biodataValue
+  +dynamic biodataStream
+  +void dispose()
+  +dynamic fetchBiodata()
+  +dynamic getBiodata()
+}
+
+"sion_app::src::bloc::biodata_bloc.dart::BiodataBloc" o-- "sion_app::src::repository::repository.dart::Repository"
+"sion_app::src::bloc::biodata_bloc.dart::BiodataBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<BiodataModel>>"
+
+class "sion_app::src::bloc::bloc_status.dart::Status" {
+  +int index
+  {static} +List<Status> values
+  {static} +Status LOADING
+  {static} +Status ERROR
+  {static} +Status COMPLATED
+}
+
+"sion_app::src::bloc::bloc_status.dart::Status" o-- "sion_app::src::bloc::bloc_status.dart::Status"
+
+class "sion_app::src::bloc::bloc_status.dart::BlocStatus<T>" {
+  +Status status
+  +T data
+  +String message
+  +String toString()
+}
+
+"sion_app::src::bloc::bloc_status.dart::BlocStatus<T>" o-- "sion_app::src::bloc::bloc_status.dart::Status"
+
+class "sion_app::src::bloc::kp_bloc.dart::KpBloc" {
+  -Repository _repository
+  -PublishSubject<BlocStatus<KpModel>> _kpValue
+  +dynamic kpStream
+  +void dispose()
+  +dynamic getKp()
+}
+
+"sion_app::src::bloc::kp_bloc.dart::KpBloc" o-- "sion_app::src::repository::repository.dart::Repository"
+"sion_app::src::bloc::kp_bloc.dart::KpBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<KpModel>>"
+
+class "sion_app::src::bloc::login_bloc.dart::LoginBloc" {
+  -Repository _repository
+  -BehaviorSubject<String> _username
+  -BehaviorSubject<String> _password
+  -PublishSubject<BlocStatus<LoginModel>> _loginValue
+  +dynamic Function(String) usernameSink
+  +dynamic Function(String) passwordSink
+  +dynamic loginStream
+  +void dispose()
+  +dynamic fetchToken()
+}
+
+"sion_app::src::bloc::login_bloc.dart::LoginBloc" o-- "sion_app::src::repository::repository.dart::Repository"
+"sion_app::src::bloc::login_bloc.dart::LoginBloc" o-- "rxdart::src::subjects::behavior_subject.dart::BehaviorSubject<String>"
+"sion_app::src::bloc::login_bloc.dart::LoginBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<LoginModel>>"
+"sion_app::src::bloc::login_bloc.dart::LoginBloc" o-- "sion_app::src::bloc::login_bloc.dart::dynamic Function(String)"
+
+class "sion_app::src::bloc::nilai_bloc.dart::NilaiBloc" {
+  -Repository _repository
+  -PublishSubject<BlocStatus<IpModel>> _ipValue
+  -PublishSubject<BlocStatus<TranskripModel>> _transkripValue
+  -PublishSubject<BlocStatus<HistoriModel>> _historiValue
+  -BehaviorSubject<String> _historiParam
+  +dynamic ipStream
+  +dynamic transkripStream
+  +dynamic historiStream
+  +dynamic Function(String) historiSink
+  +void dispose()
+  +dynamic fetchIp()
+  +dynamic fetchTranskrip()
+  +dynamic fetchHistori()
+}
+
+"sion_app::src::bloc::nilai_bloc.dart::NilaiBloc" o-- "sion_app::src::repository::repository.dart::Repository"
+"sion_app::src::bloc::nilai_bloc.dart::NilaiBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<IpModel>>"
+"sion_app::src::bloc::nilai_bloc.dart::NilaiBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<TranskripModel>>"
+"sion_app::src::bloc::nilai_bloc.dart::NilaiBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<HistoriModel>>"
+"sion_app::src::bloc::nilai_bloc.dart::NilaiBloc" o-- "rxdart::src::subjects::behavior_subject.dart::BehaviorSubject<String>"
+"sion_app::src::bloc::nilai_bloc.dart::NilaiBloc" o-- "sion_app::src::bloc::nilai_bloc.dart::dynamic Function(String)"
+
+class "sion_app::src::bloc::pencarian_bloc.dart::PencarianBloc" {
+  -Repository _repository
+  -PublishSubject<BlocStatus<MahasiswaModel>> _mahasiswaValue
+  -PublishSubject<BlocStatus<DosenModel>> _dosenValue
+  -BehaviorSubject<String> _mahasiswaQ
+  -BehaviorSubject<String> _dosenQ
+  +dynamic mahasiswaStream
+  +dynamic dosenStream
+  +dynamic Function(String) mahasiswaSink
+  +dynamic Function(String) dosenSink
+  +void dispose()
+  +dynamic getMahasiswa()
+  +dynamic getDosen()
+}
+
+"sion_app::src::bloc::pencarian_bloc.dart::PencarianBloc" o-- "sion_app::src::repository::repository.dart::Repository"
+"sion_app::src::bloc::pencarian_bloc.dart::PencarianBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<MahasiswaModel>>"
+"sion_app::src::bloc::pencarian_bloc.dart::PencarianBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<DosenModel>>"
+"sion_app::src::bloc::pencarian_bloc.dart::PencarianBloc" o-- "rxdart::src::subjects::behavior_subject.dart::BehaviorSubject<String>"
+"sion_app::src::bloc::pencarian_bloc.dart::PencarianBloc" o-- "sion_app::src::bloc::pencarian_bloc.dart::dynamic Function(String)"
+
+class "sion_app::src::bloc::pengumuman_bloc.dart::PengumumanBloc" {
+  -Repository _repository
+  -PublishSubject<BlocStatus<PengumumanModel>> _pengumumanValue
+  +dynamic pengumumanStream
+  +void dispose()
+  +dynamic fetchPengumuman()
+}
+
+"sion_app::src::bloc::pengumuman_bloc.dart::PengumumanBloc" o-- "sion_app::src::repository::repository.dart::Repository"
+"sion_app::src::bloc::pengumuman_bloc.dart::PengumumanBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<PengumumanModel>>"
+
+class "sion_app::src::bloc::perkuliahan_bloc.dart::PerkuliahanBloc" {
+  -Repository _repository
+  -PublishSubject<BlocStatus<JadualModel>> _jadwalValue
+  -PublishSubject<BlocStatus<KrsModel>> _krsValue
+  -PublishSubject<BlocStatus<KrsAllModel>> _krsAllValue
+  -PublishSubject<BlocStatus<KrsSpModel>> _krsSpValue
+  -PublishSubject<BlocStatus<UasModel>> _uasValue
+  -PublishSubject<BlocStatus<AbsensiModel>> _absensiValue
+  +dynamic krsAllStream
+  +dynamic krsSpstream
+  +dynamic uasStream
+  +dynamic absensiStream
+  +dynamic jadwalSemesterStream
+  +void dispose()
+  +dynamic fetchJadwal()
+  +dynamic fetchKrs()
+  +dynamic fetchKrsAll()
+  +dynamic fetchKrsSp()
+  +dynamic fetchUas()
+  +dynamic fetchAbsensi()
+}
+
+"sion_app::src::bloc::perkuliahan_bloc.dart::PerkuliahanBloc" o-- "sion_app::src::repository::repository.dart::Repository"
+"sion_app::src::bloc::perkuliahan_bloc.dart::PerkuliahanBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<JadualModel>>"
+"sion_app::src::bloc::perkuliahan_bloc.dart::PerkuliahanBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<KrsModel>>"
+"sion_app::src::bloc::perkuliahan_bloc.dart::PerkuliahanBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<KrsAllModel>>"
+"sion_app::src::bloc::perkuliahan_bloc.dart::PerkuliahanBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<KrsSpModel>>"
+"sion_app::src::bloc::perkuliahan_bloc.dart::PerkuliahanBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<UasModel>>"
+"sion_app::src::bloc::perkuliahan_bloc.dart::PerkuliahanBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<AbsensiModel>>"
+
+class "sion_app::src::bloc::ta_bloc.dart::TaBloc" {
+  -Repository _repository
+  +List<BlocStatus<JadwalModel>> jadwalList
+  -PublishSubject<BlocStatus<TopikModel>> _topikValue
+  -PublishSubject<BlocStatus<PengajuanModel>> _pengajuanValue
+  -PublishSubject<BlocStatus<PencarianJudulModel>> _pencarianJudulValue
+  -PublishSubject<BlocStatus<SeminarTerbukaModel>> _seminarTerbukaValue
+  -PublishSubject<BlocStatus<ProposalModel>> _jadwalProposalValue
+  -PublishSubject<BlocStatus<TerbukaModel>> _jadwalTerbukaValue
+  -PublishSubject<BlocStatus<TertutupModel>> _jadwalTertutupValue
+  -BehaviorSubject<String> _pencarianJudulParam
+  +dynamic pengajuanStream
+  +dynamic topikStream
+  +dynamic pencarianJudulStream
+  +dynamic seminarTerbukaStream
+  +dynamic proposalStream
+  +dynamic terbukaStream
+  +dynamic tertutupStream
+  +dynamic jadwalStream
+  +dynamic Function(String) pencarianJudulSink
+  +void dispose()
+  +dynamic fetchPengajuan()
+  +dynamic fetchTopik()
+  +dynamic fetchPencarianJudul()
+  +dynamic fetchSeminarTerbuka()
+  +dynamic fetchJadwalProposal()
+  +dynamic fetchJadwalTerbuka()
+  +dynamic fetchJadwalTertutup()
+}
+
+"sion_app::src::bloc::ta_bloc.dart::TaBloc" o-- "sion_app::src::repository::repository.dart::Repository"
+"sion_app::src::bloc::ta_bloc.dart::TaBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<TopikModel>>"
+"sion_app::src::bloc::ta_bloc.dart::TaBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<PengajuanModel>>"
+"sion_app::src::bloc::ta_bloc.dart::TaBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<PencarianJudulModel>>"
+"sion_app::src::bloc::ta_bloc.dart::TaBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<SeminarTerbukaModel>>"
+"sion_app::src::bloc::ta_bloc.dart::TaBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<ProposalModel>>"
+"sion_app::src::bloc::ta_bloc.dart::TaBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<TerbukaModel>>"
+"sion_app::src::bloc::ta_bloc.dart::TaBloc" o-- "rxdart::src::subjects::publish_subject.dart::PublishSubject<BlocStatus<TertutupModel>>"
+"sion_app::src::bloc::ta_bloc.dart::TaBloc" o-- "rxdart::src::subjects::behavior_subject.dart::BehaviorSubject<String>"
+"sion_app::src::bloc::ta_bloc.dart::TaBloc" o-- "sion_app::src::bloc::ta_bloc.dart::dynamic Function(String)"
+
+class "sion_app::src::model::akademik_model.dart::Prasyarat" {
+  +String kodeMatkul
+  +String namaMatkul
+  +String semester
+  +String sks
+  +String syarat
+}
+
+class "sion_app::src::model::akademik_model.dart::NonPrasyarat" {
+  +String kodeMatkul
+  +String namaMatkul
+  +String semester
+  +String sks
+}
+
+class "sion_app::src::model::akademik_model.dart::PrasyaratModel" {
+  +List<Prasyarat> prasyarat
+  +List<NonPrasyarat> nonPrasyarat
+  +String message
+}
+
+class "sion_app::src::model::akademik_model.dart::Perwalian" {
+  +String semester
+  +String jam
+  +String tanggal
+  +String ruangan
+}
+
+class "sion_app::src::model::akademik_model.dart::PerwalianModel" {
+  +Perwalian perwalian
+  +String message
+}
+
+"sion_app::src::model::akademik_model.dart::PerwalianModel" o-- "sion_app::src::model::akademik_model.dart::Perwalian"
+
+class "sion_app::src::model::akademik_model.dart::Polling" {
+  +String kodeMatkul
+  +String namaMatkul
+  +String semester
+  +String sks
+}
+
+class "sion_app::src::model::akademik_model.dart::PollingModel" {
+  +List<Polling> polling
+  +String message
+}
+
+class "sion_app::src::model::akademik_model.dart::SisaMatkul" {
+  +String kodeMatkul
+  +String namaMatkul
+  +String semester
+  +String sks
+}
+
+class "sion_app::src::model::akademik_model.dart::SisaMatkulModel" {
+  +List<SisaMatkul> sisaMatkul
+  +String message
+}
+
+class "sion_app::src::model::biaya_model.dart::Biaya" {
+  +String semester
+  +String tahunAjaran
+  +String total
+  +String potongan
+  +String bayar
+  +String denda
+}
+
+class "sion_app::src::model::biaya_model.dart::BiayaModel" {
+  +List<Biaya> biaya
+  +String message
+}
+
+class "sion_app::src::model::biodata_model.dart::Biodata" {
+  +String nim
+  +String nama
+  +String prodi
+  +String jurusan
+  +String dosenWali
+  +String tanggalLahir
+  +String tempatLahir
+  +String alamat
+  +String desa
+  +String kecamatan
+  +String kabupaten
+  +String provinsi
+  +String telpon
+  +String ponsel
+  +String email
+  +String facebook
+  +String twitter
+  +String agama
+  +String nmIbu
+  +String nmAyah
+}
+
+class "sion_app::src::model::biodata_model.dart::BiodataModel" {
+  +Biodata biodata
+  +String message
+}
+
+"sion_app::src::model::biodata_model.dart::BiodataModel" o-- "sion_app::src::model::biodata_model.dart::Biodata"
+
+class "sion_app::src::model::kp_model.dart::KpModel" {
+  +String status
+  +String statusAnggota
+  +String message
+}
+
+class "sion_app::src::model::login_model.dart::LoginModel" {
+  +String token
+  +String tokenType
+  +String message
+}
+
+class "sion_app::src::model::nilai_model.dart::Ip" {
+  +String semester
+  +String ipSemester
+  +String ipKumulatif
+  +String sksSemester
+  +String sksKumulatif
+}
+
+class "sion_app::src::model::nilai_model.dart::IpModel" {
+  +List<Ip> ip
+  +String message
+}
+
+class "sion_app::src::model::nilai_model.dart::HasilUjian" {
+  +String kodeKuliah
+  +String namaKuliah
+  +String semester
+  +String kuis
+  +String tugas
+  +String uts
+  +String uas
+  +String nilaiAkhir
+  +String nh
+}
+
+class "sion_app::src::model::nilai_model.dart::HasilUjianModel" {
+  +List<HasilUjian> hasilUjian
+  +String message
+}
+
+class "sion_app::src::model::nilai_model.dart::Transkrip" {
+  +String semester
+  +String kodeMatakuliah
+  +String namaMatakuliah
+  +String sks
+  +String nh
+}
+
+class "sion_app::src::model::nilai_model.dart::TranskripModel" {
+  +List<Transkrip> transkrip
+  +String message
+}
+
+class "sion_app::src::model::nilai_model.dart::Histori" {
+  +String kodeMatakuliah
+  +String namaMatakuliah
+  +String tugas
+  +String kuis
+  +String uts
+  +String uas
+  +String na
+  +String nh
+  +String semester
+}
+
+class "sion_app::src::model::nilai_model.dart::HistoriModel" {
+  +List<Histori> histori
+  +String message
+}
+
+class "sion_app::src::model::pencarian_model.dart::Mahasiswa" {
+  +String nama
+  +String nim
+  +String prodi
+  +String status
+}
+
+class "sion_app::src::model::pencarian_model.dart::MahasiswaModel" {
+  +List<Mahasiswa> mahasiswa
+  +String message
+}
+
+class "sion_app::src::model::pencarian_model.dart::Dosen" {
+  +String nama
+  +String jurusan
+  +String alamat
+  +String telepon
+  +String email
+}
+
+class "sion_app::src::model::pencarian_model.dart::DosenModel" {
+  +List<Dosen> dosen
+  +String message
+}
+
+class "sion_app::src::model::pengumuman_model.dart::Pengumuman" {
+  +String prioritas
+  +String judul
+  +String pengumuman
+  +String fileName
+  +String dirUpload
+}
+
+class "sion_app::src::model::pengumuman_model.dart::PengumumanModel" {
+  +List<Pengumuman> pengumuman
+  +String message
+}
+
+class "sion_app::src::model::perkuliahan_model.dart::Jadwal" {
+  +String hari
+  +String kodeMatkul
+  +String namaMatkul
+  +String kelas
+  +String ruangan
+  +String jam
+  +String namaDosen
+}
+
+class "sion_app::src::model::perkuliahan_model.dart::JadualModel" {
+  +List<Jadwal> jadwal
+  +String message
+}
+
+class "sion_app::src::model::perkuliahan_model.dart::Krs" {
+  +String kodeMatkul
+  +String namaMatkul
+  +String sks
+  +String kodeKelas
+  +String semester1
+  +String semester2
+  +String tahunAjar
+}
+
+class "sion_app::src::model::perkuliahan_model.dart::KrsModel" {
+  +List<Krs> krs
+  +String message
+}
+
+class "sion_app::src::model::perkuliahan_model.dart::JadwalSemester" {
+  +BlocStatus<JadualModel> jadwal
+  +BlocStatus<KrsModel> krs
+}
+
+"sion_app::src::model::perkuliahan_model.dart::JadwalSemester" o-- "sion_app::src::bloc::bloc_status.dart::BlocStatus<JadualModel>"
+"sion_app::src::model::perkuliahan_model.dart::JadwalSemester" o-- "sion_app::src::bloc::bloc_status.dart::BlocStatus<KrsModel>"
+
+class "sion_app::src::model::perkuliahan_model.dart::KrsAll" {
+  +String kodeMatkul
+  +String namaMatkul
+  +String kodeKelas
+  +String semester
+  +String sks
+}
+
+class "sion_app::src::model::perkuliahan_model.dart::KrsAllModel" {
+  +List<KrsAll> krs
+  +String message
+}
+
+class "sion_app::src::model::perkuliahan_model.dart::Uas" {
+  +String namaMatkul
+  +String hari
+  +String tanggal
+  +String kodeKelas
+  +String ruangan
+  +String kursi
+  +String sks
+  +String jam
+}
+
+class "sion_app::src::model::perkuliahan_model.dart::UasModel" {
+  +List<Uas> uas
+  +String message
+}
+
+class "sion_app::src::model::perkuliahan_model.dart::KrsSp" {
+  +String kodeMatkul
+  +String namaMatkul
+  +String kodeKelas
+  +String sks
+  +String semester
+}
+
+class "sion_app::src::model::perkuliahan_model.dart::KrsSpModel" {
+  +List<KrsSp> krsSp
+  +String message
+}
+
+class "sion_app::src::model::perkuliahan_model.dart::Absensi" {
+  +String kodeMatkul
+  +String namaMatkul
+  +String absen1
+  +String absen2
+  +String absen3
+  +String absen4
+  +String absen5
+  +String absen6
+  +String absen7
+  +String absen8
+  +String absen9
+  +String absen10
+  +String absen11
+  +String absen12
+  +String absen13
+  +String absen14
+  +String absen15
+}
+
+class "sion_app::src::model::perkuliahan_model.dart::AbsensiModel" {
+  +List<Absensi> absensi
+  +String message
+}
+
+class "sion_app::src::model::ta_model.dart::Pengajuan" {
+  +String nim
+  +String judul
+  +String judulVerifikasi
+  +String keterangan
+  +String status
+}
+
+class "sion_app::src::model::ta_model.dart::PengajuanModel" {
+  +Pengajuan pengajuan
+  +String message
+}
+
+"sion_app::src::model::ta_model.dart::PengajuanModel" o-- "sion_app::src::model::ta_model.dart::Pengajuan"
+
+class "sion_app::src::model::ta_model.dart::Topik" {
+  +String kategori
+  +String topik
+  +String dosen
+}
+
+class "sion_app::src::model::ta_model.dart::TopikModel" {
+  +List<Topik> topik
+  +String message
+}
+
+class "sion_app::src::model::ta_model.dart::PencarianJudul" {
+  +String nim
+  +String nama
+  +String judul
+  +String namaProdi
+}
+
+class "sion_app::src::model::ta_model.dart::PencarianJudulModel" {
+  +List<PencarianJudul> pencarian
+  +String message
+}
+
+class "sion_app::src::model::ta_model.dart::SeminarTerbuka" {
+  +String nim
+  +String nama
+  +String ruangan
+  +String jam
+  +int inthari
+  +String hari
+  +String tanggal
+  +int intbulan
+  +String bulan
+  +String tahun
+}
+
+class "sion_app::src::model::ta_model.dart::SeminarTerbukaModel" {
+  +List<SeminarTerbuka> seminarTerbuka
+  +String message
+}
+
+class "sion_app::src::model::ta_model.dart::Proposal" {
+  +String nim
+  +String ruangan
+  +String jam
+  +int inthari
+  +String hari
+  +String tanggal
+  +int intbulan
+  +String bulan
+  +String tahun
+}
+
+class "sion_app::src::model::ta_model.dart::ProposalModel" {
+  +List<Proposal> proposal
+  +String message
+}
+
+class "sion_app::src::model::ta_model.dart::Terbuka" {
+  +String ruangan
+  +String jam
+  +int inthari
+  +String hari
+  +String tanggal
+  +int intBulan
+  +String bulan
+  +String tahun
+}
+
+class "sion_app::src::model::ta_model.dart::TerbukaModel" {
+  +List<Terbuka> terbuka
+  +String message
+}
+
+class "sion_app::src::model::ta_model.dart::Tertutup" {
+  +String nim
+  +String nama
+  +String ruangan
+  +String jam
+  +String hari
+  +String tanggal
+  +int intbulan
+  +String bulan
+  +String tahun
+}
+
+class "sion_app::src::model::ta_model.dart::TertutupModel" {
+  +List<Tertutup> tertutup
+  +String message
+}
+
+class "sion_app::src::model::ta_model.dart::JadwalModel" {
+  +BlocStatus<ProposalModel> jadwalProposal
+  +BlocStatus<TerbukaModel> jadwalTerbuka
+  +BlocStatus<TertutupModel> jadwalTertutup
+}
+
+"sion_app::src::model::ta_model.dart::JadwalModel" o-- "sion_app::src::bloc::bloc_status.dart::BlocStatus<ProposalModel>"
+"sion_app::src::model::ta_model.dart::JadwalModel" o-- "sion_app::src::bloc::bloc_status.dart::BlocStatus<TerbukaModel>"
+"sion_app::src::model::ta_model.dart::JadwalModel" o-- "sion_app::src::bloc::bloc_status.dart::BlocStatus<TertutupModel>"
+
+class "sion_app::src::repository::akademik_provider.dart::AkademikProvider" {
+  +Future fetchPrasyarat()
+  +Future fetchPerwalian()
+  +Future fetchPolling()
+  +Future fetchSisaMatkul()
+}
+
+class "sion_app::src::repository::biaya_provider.dart::BiayaProvider" {
+  +Future fetchBiaya()
+}
+
+class "sion_app::src::repository::biodata_provider.dart::BiodataProvider" {
+  +Future fetchBiodata()
+  +Future getBiodata()
+}
+
+class "sion_app::src::repository::kp_provider.dart::KpProvider" {
+  +Future fetchKp()
+}
+
+class "sion_app::src::repository::login_provider.dart::LoginProvider" {
+  +Future fetchToken()
+}
+
+class "sion_app::src::repository::nilai_provider.dart::NilaiProvider" {
+  +Future fetchIp()
+  +Future fetchTranskrip()
+  +Future fetchHistori()
+}
+
+class "sion_app::src::repository::pencarian_provider.dart::PencarianProvider" {
+  +Future fetchMahasiswa()
+  +Future fetchDosen()
+}
+
+class "sion_app::src::repository::pengumuman_provider.dart::PengumumanProvider" {
+  +Future fetchPengumuman()
+}
+
+class "sion_app::src::repository::perkuliahan_provider.dart::PerkuliahanProvider" {
+  +Future fetchJadwal()
+  +Future fetchKrs()
+  +Future fetchKrsAll()
+  +Future fetchKrsSp()
+  +Future fetchUas()
+  +Future fetchAbsensi()
+}
+
+class "sion_app::src::repository::repository.dart::Repository" {
+  -KpProvider _kpProvider
+  -TaProvider _taProvider
+  -LoginProvider _loginProvider
+  -BiayaProvider _biayaProvider
+  -NilaiProvider _nilaiProvider
+  -BiodataProvider _biodataProvider
+  -AkademikProvider _akademikProvider
+  -PencarianProvider _pencarianProvier
+  -PengumumanProvider _pengumumanProvider
+  -PerkuliahanProvider _perkuliahanProvider
+  +Future loginRepository()
+  +Future pengumumanRepository()
+  +Future biodataRepository()
+  +Future checkBiodataRepository()
+  +Future mahasiswaRepository()
+  +Future dosenRepository()
+  +Future kpRepository()
+  +Future ipRepository()
+  +Future transktipRepository()
+  +Future historiRepository()
+  +Future biayaRepository()
+  +Future pengajuanRepository()
+  +Future topikRepository()
+  +Future pencarianJudulRepository()
+  +Future seminarTerbukaRepository()
+  +Future proposalRepository()
+  +Future terbukaRepository()
+  +Future tertutupRepository()
+  +Future jadwalRepository()
+  +Future krsRepository()
+  +Future krsAllRepository()
+  +Future krsSpRepository()
+  +Future uasRepository()
+  +Future absensiRepository()
+  +Future prasyaratRepository()
+  +Future perwalianRepository()
+  +Future pollingRepository()
+  +Future sisaMatkulRepository()
+}
+
+"sion_app::src::repository::repository.dart::Repository" o-- "sion_app::src::repository::kp_provider.dart::KpProvider"
+"sion_app::src::repository::repository.dart::Repository" o-- "sion_app::src::repository::ta_provider.dart::TaProvider"
+"sion_app::src::repository::repository.dart::Repository" o-- "sion_app::src::repository::login_provider.dart::LoginProvider"
+"sion_app::src::repository::repository.dart::Repository" o-- "sion_app::src::repository::biaya_provider.dart::BiayaProvider"
+"sion_app::src::repository::repository.dart::Repository" o-- "sion_app::src::repository::nilai_provider.dart::NilaiProvider"
+"sion_app::src::repository::repository.dart::Repository" o-- "sion_app::src::repository::biodata_provider.dart::BiodataProvider"
+"sion_app::src::repository::repository.dart::Repository" o-- "sion_app::src::repository::akademik_provider.dart::AkademikProvider"
+"sion_app::src::repository::repository.dart::Repository" o-- "sion_app::src::repository::pencarian_provider.dart::PencarianProvider"
+"sion_app::src::repository::repository.dart::Repository" o-- "sion_app::src::repository::pengumuman_provider.dart::PengumumanProvider"
+"sion_app::src::repository::repository.dart::Repository" o-- "sion_app::src::repository::perkuliahan_provider.dart::PerkuliahanProvider"
+
+class "sion_app::src::repository::ta_provider.dart::TaProvider" {
+  +Future fetchPengajuan()
+  +Future fetchTopik()
+  +Future fetchPencarianJudul()
+  +Future fetchSeminarTerbuka()
+  +Future fetchSidangProposal()
+  +Future fetchSidangTerbuka()
+  +Future fetchSidangTertutup()
+}
+
+class "sion_app::src::screen::akademik_screen.dart::AkademikScreen" {
+  +_AkademikScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::akademik_screen.dart::AkademikScreen"
+
+class "sion_app::src::screen::akademik_screen.dart::_AkademikScreenState" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::akademik_screen.dart::_AkademikScreenState"
+
+class "sion_app::src::screen::akademik_screen.dart::PrasyaratScreen" {
+  +_PrasyaratScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::akademik_screen.dart::PrasyaratScreen"
+
+class "sion_app::src::screen::akademik_screen.dart::_PrasyaratScreenState" {
+  +void initState()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::akademik_screen.dart::_PrasyaratScreenState"
+
+class "sion_app::src::screen::akademik_screen.dart::PerwalianScreen" {
+  +_PerwalianScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::akademik_screen.dart::PerwalianScreen"
+
+class "sion_app::src::screen::akademik_screen.dart::_PerwalianScreenState" {
+  +void initState()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::akademik_screen.dart::_PerwalianScreenState"
+
+class "sion_app::src::screen::akademik_screen.dart::PollingScreen" {
+  +_PollingScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::akademik_screen.dart::PollingScreen"
+
+class "sion_app::src::screen::akademik_screen.dart::_PollingScreenState" {
+  +void initState()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::akademik_screen.dart::_PollingScreenState"
+
+class "sion_app::src::screen::akademik_screen.dart::SisaMatakuliahScreen" {
+  +_SisaMatakuliahScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::akademik_screen.dart::SisaMatakuliahScreen"
+
+class "sion_app::src::screen::akademik_screen.dart::_SisaMatakuliahScreenState" {
+  +void initState()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::akademik_screen.dart::_SisaMatakuliahScreenState"
+
+class "sion_app::src::screen::biaya_screen.dart::BiayaScreen" {
+  +_BiayaScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::biaya_screen.dart::BiayaScreen"
+
+class "sion_app::src::screen::biaya_screen.dart::_BiayaScreenState" {
+  -BiayaBloc _biayaBloc
+  +void initState()
+  +Widget build()
+}
+
+"sion_app::src::screen::biaya_screen.dart::_BiayaScreenState" o-- "sion_app::src::bloc::biaya_bloc.dart::BiayaBloc"
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::biaya_screen.dart::_BiayaScreenState"
+
+class "sion_app::src::screen::biodata_screen.dart::BiodataScreen" {
+  +BiodataModel biodata
+  +_BiodataScreenState createState()
+}
+
+"sion_app::src::screen::biodata_screen.dart::BiodataScreen" o-- "sion_app::src::model::biodata_model.dart::BiodataModel"
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::biodata_screen.dart::BiodataScreen"
+
+class "sion_app::src::screen::biodata_screen.dart::_BiodataScreenState" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::biodata_screen.dart::_BiodataScreenState"
+
+class "sion_app::src::screen::home_screen.dart::HomeScreen" {
+  +_HomeScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::home_screen.dart::HomeScreen"
+
+class "sion_app::src::screen::home_screen.dart::_HomeScreenState" {
+  -PengumumanBloc _pengumumanBloc
+  +void initState()
+  +Widget build()
+  -Future _onWillPop()
+  +dynamic toastShow()
+}
+
+"sion_app::src::screen::home_screen.dart::_HomeScreenState" o-- "sion_app::src::bloc::pengumuman_bloc.dart::PengumumanBloc"
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::home_screen.dart::_HomeScreenState"
+
+class "sion_app::src::screen::kp_screen.dart::KpScreen" {
+  +_KpScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::kp_screen.dart::KpScreen"
+
+class "sion_app::src::screen::kp_screen.dart::_KpScreenState" {
+  -KpBloc _kpBloc
+  +void initState()
+  +Widget build()
+  -Future _onRefresh()
+}
+
+"sion_app::src::screen::kp_screen.dart::_KpScreenState" o-- "sion_app::src::bloc::kp_bloc.dart::KpBloc"
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::kp_screen.dart::_KpScreenState"
+
+class "sion_app::src::screen::login_screen.dart::LoginScreen" {
+  +_LoginScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::login_screen.dart::LoginScreen"
+
+class "sion_app::src::screen::login_screen.dart::_LoginScreenState" {
+  -LoginBloc _loginBloc
+  -BiodataBloc _biodataBloc
+  {static} -bool _obsecureValue
+  +Widget build()
+  -Future _onWillPop()
+}
+
+"sion_app::src::screen::login_screen.dart::_LoginScreenState" o-- "sion_app::src::bloc::login_bloc.dart::LoginBloc"
+"sion_app::src::screen::login_screen.dart::_LoginScreenState" o-- "sion_app::src::bloc::biodata_bloc.dart::BiodataBloc"
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::login_screen.dart::_LoginScreenState"
+
+class "sion_app::src::screen::nilai_screen.dart::NilaiScreen" {
+  +_NilaiScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::nilai_screen.dart::NilaiScreen"
+
+class "sion_app::src::screen::nilai_screen.dart::_NilaiScreenState" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::nilai_screen.dart::_NilaiScreenState"
+
+class "sion_app::src::screen::nilai_screen.dart::HistoriScreen" {
+  +_HistoriScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::nilai_screen.dart::HistoriScreen"
+
+class "sion_app::src::screen::nilai_screen.dart::_HistoriScreenState" {
+  +List<DropdownMenuItem> menuItem
+  +dynamic hasilMenu
+  +void initState()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::nilai_screen.dart::_HistoriScreenState"
+
+class "sion_app::src::screen::nilai_screen.dart::IpkScreen" {
+  +_IpkScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::nilai_screen.dart::IpkScreen"
+
+class "sion_app::src::screen::nilai_screen.dart::_IpkScreenState" {
+  +void initState()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::nilai_screen.dart::_IpkScreenState"
+
+class "sion_app::src::screen::nilai_screen.dart::TranskripScreen" {
+  +_TranskripScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::nilai_screen.dart::TranskripScreen"
+
+class "sion_app::src::screen::nilai_screen.dart::_TranskripScreenState" {
+  +void initState()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::nilai_screen.dart::_TranskripScreenState"
+
+class "sion_app::src::screen::pencarian_screen.dart::PencarianScreen" {
+  +_PencarianScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::pencarian_screen.dart::PencarianScreen"
+
+class "sion_app::src::screen::pencarian_screen.dart::_PencarianScreenState" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::pencarian_screen.dart::_PencarianScreenState"
+
+class "sion_app::src::screen::pencarian_screen.dart::MahasiswaPage" {
+  +_MahasiswaPageState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::pencarian_screen.dart::MahasiswaPage"
+
+class "sion_app::src::screen::pencarian_screen.dart::_MahasiswaPageState" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::pencarian_screen.dart::_MahasiswaPageState"
+
+class "sion_app::src::screen::pencarian_screen.dart::DosenPage" {
+  +_DosenPageState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::pencarian_screen.dart::DosenPage"
+
+class "sion_app::src::screen::pencarian_screen.dart::_DosenPageState" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::pencarian_screen.dart::_DosenPageState"
+
+class "sion_app::src::screen::perkuliahan_screen.dart::PerkuliahanScreen" {
+  +_PerkuliahanScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::perkuliahan_screen.dart::PerkuliahanScreen"
+
+class "sion_app::src::screen::perkuliahan_screen.dart::_PerkuliahanScreenState" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::perkuliahan_screen.dart::_PerkuliahanScreenState"
+
+class "sion_app::src::screen::perkuliahan_screen.dart::JadwalScreen" {
+  +_JadwalScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::perkuliahan_screen.dart::JadwalScreen"
+
+class "sion_app::src::screen::perkuliahan_screen.dart::_JadwalScreenState" {
+  +void initState()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::perkuliahan_screen.dart::_JadwalScreenState"
+
+class "sion_app::src::screen::perkuliahan_screen.dart::KrsScreen" {
+  +_KrsScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::perkuliahan_screen.dart::KrsScreen"
+
+class "sion_app::src::screen::perkuliahan_screen.dart::_KrsScreenState" {
+  +void initState()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::perkuliahan_screen.dart::_KrsScreenState"
+
+class "sion_app::src::screen::perkuliahan_screen.dart::KrsSpScreen" {
+  +_KrsSpScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::perkuliahan_screen.dart::KrsSpScreen"
+
+class "sion_app::src::screen::perkuliahan_screen.dart::_KrsSpScreenState" {
+  +void initState()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::perkuliahan_screen.dart::_KrsSpScreenState"
+
+class "sion_app::src::screen::perkuliahan_screen.dart::UasScreen" {
+  +_UasScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::perkuliahan_screen.dart::UasScreen"
+
+class "sion_app::src::screen::perkuliahan_screen.dart::_UasScreenState" {
+  +void initState()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::perkuliahan_screen.dart::_UasScreenState"
+
+class "sion_app::src::screen::perkuliahan_screen.dart::AbsensiScreen" {
+  +_AbsensiScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::perkuliahan_screen.dart::AbsensiScreen"
+
+class "sion_app::src::screen::perkuliahan_screen.dart::_AbsensiScreenState" {
+  +void initState()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::perkuliahan_screen.dart::_AbsensiScreenState"
+
+class "sion_app::src::screen::splash_screen.dart::SplashScreen" {
+  +_SplashScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::splash_screen.dart::SplashScreen"
+
+class "sion_app::src::screen::splash_screen.dart::_SplashScreenState" {
+  +void initState()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::splash_screen.dart::_SplashScreenState"
+
+class "sion_app::src::screen::ta_screen.dart::TaScreen" {
+  +_TaScreenState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::ta_screen.dart::TaScreen"
+
+class "sion_app::src::screen::ta_screen.dart::_TaScreenState" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::ta_screen.dart::_TaScreenState"
+
+class "sion_app::src::screen::ta_screen.dart::PengajuanPage" {
+  +_PengajuanPageState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::ta_screen.dart::PengajuanPage"
+
+class "sion_app::src::screen::ta_screen.dart::_PengajuanPageState" {
+  +void initState()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::ta_screen.dart::_PengajuanPageState"
+
+class "sion_app::src::screen::ta_screen.dart::JadwalPage" {
+  +_JadwalPageState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::ta_screen.dart::JadwalPage"
+
+class "sion_app::src::screen::ta_screen.dart::_JadwalPageState" {
+  +void initState()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::ta_screen.dart::_JadwalPageState"
+
+class "sion_app::src::screen::ta_screen.dart::TopikPage" {
+  +_TopikPageState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::ta_screen.dart::TopikPage"
+
+class "sion_app::src::screen::ta_screen.dart::_TopikPageState" {
+  -dynamic _search
+  +void initState()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::ta_screen.dart::_TopikPageState"
+
+class "sion_app::src::screen::ta_screen.dart::PencarianPage" {
+  +_PencarianPageState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::ta_screen.dart::PencarianPage"
+
+class "sion_app::src::screen::ta_screen.dart::_PencarianPageState" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::ta_screen.dart::_PencarianPageState"
+
+class "sion_app::src::screen::ta_screen.dart::SeminarTerbukaPage" {
+  +_SeminarTerbukaPageState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::screen::ta_screen.dart::SeminarTerbukaPage"
+
+class "sion_app::src::screen::ta_screen.dart::_SeminarTerbukaPageState" {
+  +void initState()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::screen::ta_screen.dart::_SeminarTerbukaPageState"
+
+class "sion_app::src::util::exception_config.dart::AppException" {
+  -dynamic _message
+  -dynamic _perfix
+  +String toString()
+}
+
+"dart::core::Exception" <|-- "sion_app::src::util::exception_config.dart::AppException"
+
+class "sion_app::src::util::exception_config.dart::FetchDataException" {
+}
+
+"sion_app::src::util::exception_config.dart::AppException" <|-- "sion_app::src::util::exception_config.dart::FetchDataException"
+
+class "sion_app::src::util::exception_config.dart::BadRequestException" {
+}
+
+"sion_app::src::util::exception_config.dart::AppException" <|-- "sion_app::src::util::exception_config.dart::BadRequestException"
+
+class "sion_app::src::util::exception_config.dart::UnauthorisedException" {
+}
+
+"sion_app::src::util::exception_config.dart::AppException" <|-- "sion_app::src::util::exception_config.dart::UnauthorisedException"
+
+class "sion_app::src::util::exception_config.dart::InvalidInputException" {
+}
+
+"sion_app::src::util::exception_config.dart::AppException" <|-- "sion_app::src::util::exception_config.dart::InvalidInputException"
+
+class "sion_app::src::util::exception_config.dart::MethodNotAllowed" {
+}
+
+"sion_app::src::util::exception_config.dart::AppException" <|-- "sion_app::src::util::exception_config.dart::MethodNotAllowed"
+
+class "sion_app::src::util::exception_config.dart::NoInternetException" {
+}
+
+"sion_app::src::util::exception_config.dart::AppException" <|-- "sion_app::src::util::exception_config.dart::NoInternetException"
+
+class "sion_app::src::util::exception_config.dart::TimeOutException" {
+}
+
+"sion_app::src::util::exception_config.dart::AppException" <|-- "sion_app::src::util::exception_config.dart::TimeOutException"
+
+class "sion_app::src::util::shared_config.dart::SharedConfig" {
+  +SharedPreferences prefs
+  +Map pref
+  -Future _initShared()
+  +Future get()
+  +Future set()
+  +Future remove()
+  +Future clear()
+}
+
+"sion_app::src::util::shared_config.dart::SharedConfig" o-- "shared_preferences::shared_preferences.dart::SharedPreferences"
+
+class "sion_app::src::util::size_config.dart::SizeConfig" {
+  {static} -MediaQueryData _mediaQueryData
+  {static} -double _screenHeight
+  {static} -double _screenWidth
+  {static} +double blokHorizontal
+  {static} +double blokVertical
+  +void init()
+}
+
+"sion_app::src::util::size_config.dart::SizeConfig" o-- "flutter::src::widgets::media_query.dart::MediaQueryData"
+
+class "sion_app::src::widget::drawer_widget.dart::DrawerWidget" {
+  +_DrawerWidgetState createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "sion_app::src::widget::drawer_widget.dart::DrawerWidget"
+
+class "sion_app::src::widget::drawer_widget.dart::_DrawerWidgetState" {
+  -BiodataBloc _biodataBloc
+  +void initState()
+  +Widget build()
+}
+
+"sion_app::src::widget::drawer_widget.dart::_DrawerWidgetState" o-- "sion_app::src::bloc::biodata_bloc.dart::BiodataBloc"
+"flutter::src::widgets::framework.dart::State<T>" <|-- "sion_app::src::widget::drawer_widget.dart::_DrawerWidgetState"
+
+class "sion_app::src::widget::settings_widget.dart::SettingsMenu" {
+  {static} +String Theme
+  {static} +String LogOut
+  {static} +List menu
+}
+
+class "sion_app::src::widget::settings_widget.dart::SettingsWidget" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "sion_app::src::widget::settings_widget.dart::SettingsWidget"
+
+
+@enduml

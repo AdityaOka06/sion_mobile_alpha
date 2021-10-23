@@ -1,0 +1,76 @@
+return Container(
+                              margin: EdgeInsets.only(
+                                  bottom: SizeConfig.blokVertical * 1),
+                              child: Container(
+                                margin: EdgeInsets.only(bottom: 5),
+                                child: ExpansionTile(
+                                  trailing: Icon(
+                                    Icons.more_vert,
+                                    color: Theme.of(context).buttonColor,
+                                  ),
+                                  title: Text(
+                                      "${_topik.topik[index].topik.toString().toUpperCase()}"),
+                                  children: [
+                                    ListTile(
+                                      title: Text("Kategori"),
+                                      subtitle: Text(
+                                          "${_topik.topik[index].kategori}"),
+                                    ),
+                                    ListTile(
+                                      title: Text("Dosen"),
+                                      subtitle:
+                                          Text("${_topik.topik[index].dosen}"),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            );
+                            
+
+
+                             return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(
+                            top: SizeConfig.blokVertical * 2,
+                            left: SizeConfig.blokHorizontal * 2,
+                            right: SizeConfig.blokHorizontal * 2),
+                        child: ListTile(
+                            title: TextField(
+                              onChanged: (value) {
+                                setState(() {
+                                  _search = value.trim();
+                                });
+                              },
+                              decoration: InputDecoration(
+                                hintText: "Cari",
+                              ),
+                            ),
+                            trailing: IconButton(
+                              onPressed: () {
+                                print("search = $_search");
+                              },
+                              icon: Icon(Icons.search,
+                                  color: Theme.of(context).buttonColor),
+                            )),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(
+                            top: SizeConfig.blokVertical * 2,
+                            left: SizeConfig.blokHorizontal * 3,
+                            right: SizeConfig.blokHorizontal * 3),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: _topik.topik.length,
+                          itemBuilder: (context, index) {
+                            if (_topik.topik.length == 0) {
+                              return Center();
+                            } else 
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                );
